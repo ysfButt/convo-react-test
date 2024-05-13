@@ -1,0 +1,111 @@
+@import './theme.less';
+
+
+// Padding
+.paddings(@key, @value) {
+  .pd-@{key} {
+    padding: @value;
+  }
+  .pd-t-@{key} {
+    padding-top: @value;
+  }
+  .pd-b-@{key} {
+    padding-bottom: @value;
+  }
+  .pd-l-@{key} {
+    padding-left: @value;
+  }
+  .pd-r-@{key} {
+    padding-right: @value;
+  }
+  .pd-t-b-@{key} {
+    padding: @value 0;
+  }
+  .pd-l-r-@{key} {
+    padding: 0 @value;
+  }
+}
+
+// // Margin
+.margins(@key, @value) {
+  .mr-@{key} {
+    margin: @value;
+  }
+  .mr-t-@{key} {
+    margin-top: @value;
+  }
+  .mr-b-@{key} {
+    margin-bottom: @value;
+  }
+  .mr-l-@{key} {
+    margin-left: @value;
+  }
+  .mr-r-@{key} {
+    margin-right: @value;
+  }
+  .mr-t-b-@{key} {
+    margin: @value 0;
+  }
+  .mr-l-r-@{key} {
+    margin: 0 @value;
+  }
+}
+
+// // Border 
+.borderType(@key, @color: @border-color-base, @border-width: @border-width-base) {
+  .border-@{key} {
+    border: @border-width @border-style-base @color !important;
+  }
+  .border-top-@{key} {
+    border-top: @border-width @border-style-base @color !important;
+  }
+  .border-bottom-@{key} {
+    border-bottom: @border-width @border-style-base @color !important;
+  }
+  .border-left-@{key} {
+    border-left: @border-width @border-style-base @color !important;
+  }
+  .border-right-@{key} {
+    border-right: @border-width @border-style-base @color !important;
+  } 
+}
+
+// // Button 
+.buttonType(@bg-color: @background-color-base, @color: @black, @text-color: @black) {
+  text-shadow: none;
+  box-shadow: none;
+  color: @text-color;
+  background: @bg-color;
+  border-color: darken(@color, 10%);
+  &:hover,
+  &:focus {
+    border-color: darken(@color, 10%);
+    background: @bg-color;
+    color: @text-color;
+  }
+  .anticon {
+    color: @text-color !important;
+  }
+  .icon {
+    color: @text-color !important;
+  }
+}
+
+// // Ghost Button Color
+.ghostButtonType(@color: @black, @text-color: @black) {
+  border-color: @color;
+  color: @color;
+  .icon,
+  .anticon {
+    color: @color !important;
+  }
+  &:hover,
+  &:focus {
+    background: @color !important;
+    color: @text-color;
+    .icon,
+    .anticon {
+      color: @text-color !important;
+    }
+  }
+}
