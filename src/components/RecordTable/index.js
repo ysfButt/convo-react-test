@@ -2,15 +2,15 @@ import React from 'react';
 import { Table, Button, Space } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const RecordTable = ({records, handleView}) => {
+const RecordTable = ({records, handleView, handleEdit, handleDelete}) => {
 
   const oldRecords = [
     ...records,
   ];
 
   const newRecords = oldRecords.map((item, i) => ({
-    ...item,    
-    key: i
+    ...item,
+    key: i,
   }));
 
   const columns = [
@@ -37,8 +37,8 @@ const RecordTable = ({records, handleView}) => {
       render: (_, record) => (
         <Space size="middle">
           <Button type="success"  icon={<EyeOutlined />} onClick={() => handleView(record)}>View</Button>
-          <Button type="primary"  icon={<EditOutlined />}>Edit</Button>
-          <Button type="danger"  icon={<DeleteOutlined />}>Delete</Button>
+          <Button type="primary"  icon={<EditOutlined />} onClick={() => handleEdit(record)} >Edit</Button>
+          <Button type="danger" icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>Delete</Button>
         </Space>
       ),
     },

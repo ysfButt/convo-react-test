@@ -1,12 +1,24 @@
 import React from 'react';
 import { Card, Form, Input, InputNumber, Button, DatePicker } from 'antd';
+import moment from 'moment';
 
 const FormCard = ({ addRecord }) => {
 
+  // UseForm
+  const [form] = Form.useForm();
+
   // Form Submit
   const onFinish = (values) => {
-    addRecord(values);
+    const record = {
+      id: moment().format('LTS'),
+      title: values.title,
+      upvotes: values.upvotes,
+      DatePicker: values.DatePicker,
+    };
 
+    addRecord(record);
+
+    form.resetFields();
   };
 
   const customFormat = value => value.format("DD-MM-YYYY");
@@ -20,6 +32,7 @@ const FormCard = ({ addRecord }) => {
           remember: true,
         }}
         onFinish={onFinish}
+        form={form}
         autoComplete="off"
         size="large"
       >

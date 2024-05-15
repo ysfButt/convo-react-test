@@ -1,3 +1,4 @@
+// useIndexedDB.js
 import { useEffect, useState } from 'react';
 
 function useIndexedDB(databaseName, storeName) {
@@ -8,7 +9,7 @@ function useIndexedDB(databaseName, storeName) {
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      db.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
+      db.createObjectStore(storeName, { keyPath: 'id' });
     };
 
     request.onsuccess = (event) => {
@@ -22,14 +23,28 @@ function useIndexedDB(databaseName, storeName) {
   }, [databaseName, storeName]);
 
   const addObject = (object) => {
-    if (!db) return; // Check if db is initialized
+    if (!db) return;
     const transaction = db.transaction([storeName], 'readwrite');
     const store = transaction.objectStore(storeName);
     store.add(object);
   };
 
+  const updateObject = (object) => {
+    if (!db) return;
+    const transaction = db.transaction([storeName], 'readwrite');
+    const store = transaction.objectStore(storeName);
+    store.put(object);
+  };
+
+  const deleteObject = (id) => {
+    if (!db) return;
+    const transaction = db.transaction([storeName], 'readwrite');
+    const store = transaction.objectStore(storeName);
+    store.delete(id);
+  };
+
   const getAllObjects = (callback) => {
-    if (!db) return; // Check if db is initialized
+    if (!db) return;
     const transaction = db.transaction([storeName], 'readonly');
     const store = transaction.objectStore(storeName);
     const request = store.getAll();
@@ -45,6 +60,8 @@ function useIndexedDB(databaseName, storeName) {
 
   return {
     addObject,
+    updateObject,
+    deleteObject,
     getAllObjects,
   };
 }
