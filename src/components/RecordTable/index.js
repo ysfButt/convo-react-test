@@ -1,24 +1,17 @@
 import React from 'react';
-import { Table, Button, Space, Row } from 'antd';
+import { Table, Button, Space } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import moment from 'moment';
 
-const RecordTable = (records) => {
-
-  const newData = [
-    ...records.records,
-  ];
+const RecordTable = ({records, handleView}) => {
 
   const oldRecords = [
-    ...records.records,
+    ...records,
   ];
 
   const newRecords = oldRecords.map((item, i) => ({
     ...item,    
     key: i
   }));
-
-  console.log("newRecords", newRecords);
 
   const columns = [
     {
@@ -36,14 +29,14 @@ const RecordTable = (records) => {
       title: 'Date',
       dataIndex: 'DatePicker',
       key: 'DatePicker',
-      render: (text) => moment(text).format('l'),
+      render: (text) => text.format('DD-MM-YYYY'),
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: () => (
+      render: (_, record) => (
         <Space size="middle">
-          <Button type="success"  icon={<EyeOutlined />}>View</Button>
+          <Button type="success"  icon={<EyeOutlined />} onClick={() => handleView(record)}>View</Button>
           <Button type="primary"  icon={<EditOutlined />}>Edit</Button>
           <Button type="danger"  icon={<DeleteOutlined />}>Delete</Button>
         </Space>
@@ -55,7 +48,6 @@ const RecordTable = (records) => {
     <div className="table-wrap record-table-wrap">
       <Table 
         columns={columns}
-        // dataSource={newData}
         dataSource={newRecords}
         pagination={false} 
       />

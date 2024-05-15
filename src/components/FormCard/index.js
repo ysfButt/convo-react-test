@@ -1,33 +1,20 @@
 import React from 'react';
 import { Card, Form, Input, InputNumber, Button, DatePicker } from 'antd';
-// import moment from 'moment';
 
 const FormCard = ({ addRecord }) => {
 
-  // console.log("all addFact", addFact);
-
   // Form Submit
   const onFinish = (values) => {
-
-    const record = {
-      ...values,
-      'DatePicker': values['DatePicker'].format('YYYY-MM-DD'),
-      // 'key': null,
-    };
-    // localStorage.setItem('record', JSON.stringify(record));
-
-    // const records = JSON.parse(localStorage.getItem('record'));
-    // const records = localStorage.getItem("record");
-    console.log(record);
-
-    addRecord(record);
+    addRecord(values);
 
   };
+
+  const customFormat = value => value.format("DD-MM-YYYY");
 
   return (
     <Card title="Add Record" className="form-card" bordered={false}>
       <Form
-        name="basic"
+        name="form_card"
         layout="vertical"
         initialValues={{
           remember: true,
@@ -57,7 +44,7 @@ const FormCard = ({ addRecord }) => {
             },
           ]}
         >
-          <InputNumber min={1} max={100} placeholder="Enter upvotes number between 0 to 100" className="w-100" />
+          <InputNumber min={1} max={100} placeholder="Enter upvotes number between 0 to 100" />
         </Form.Item>
 
         <Form.Item
@@ -70,14 +57,12 @@ const FormCard = ({ addRecord }) => {
           ]}
         >
           <DatePicker 
-            // onChange={onChange} 
             placeholder="Enter date..." 
-            className="w-100" 
-            type="object"
+            format={customFormat}
           />
         </Form.Item>
 
-        <Form.Item className="mr-0">
+        <Form.Item>
           <Button type="success" htmlType="submit" block>Add Data</Button>
         </Form.Item>
       </Form>

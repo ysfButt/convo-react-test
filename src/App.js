@@ -3,9 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, ConfigProvider } from 'antd';
 
 // Components
-import FormCard from './components/FormCard/indes';
-import RecordTable from './components/RecordTable/indes';
-import SearchField from './components/SearchField/indes';
+import FormCard from './components/FormCard';
+import RecordTable from './components/RecordTable';
+import SearchField from './components/SearchField';
+
+// Modals
+import RecordView from './components/RecordView';
 
 // Utils 
 import useIndexedDB from './utils/useIndexedDB';
@@ -17,6 +20,7 @@ function App() {
 
   // States
   const [records, setRecords] = useState([]);
+  const [selectedRecord, setSelectedRecord] = useState(null); 
 
   // IndexedDB
   const { addObject, getAllObjects } = useIndexedDB('RecordsDB', 'RecordsStore');
@@ -31,6 +35,15 @@ function App() {
   const addRecord = (record) => {
     addObject(record);
     setRecords([...records, record]);
+  };
+
+  // View Record
+  const handleView = (record) => {
+    setSelectedRecord(record);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedRecord(null);
   };
 
   return (
@@ -71,7 +84,7 @@ function App() {
                   {/* Search Field End */}
 
                   {/* Record Table */}
-                  <RecordTable records={records} />
+                  <RecordTable records={records} handleView={handleView} />
                   {/* Record Table End */}
 
                 </div>
@@ -84,6 +97,10 @@ function App() {
 
         </Layout>
         {/* Main Layout End */}
+
+        {/* Modals */}
+        {selectedRecord && <RecordView selectedRecord={selectedRecord} records={records} handleCloseModal={handleCloseModal}  />}
+        {/* Modals End */}
 
       </div>
     </ConfigProvider>
