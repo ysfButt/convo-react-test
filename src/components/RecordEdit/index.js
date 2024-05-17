@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
-import { Form, Input, InputNumber, DatePicker, Modal, Button } from 'antd';
+import { Form, Input, InputNumber, DatePicker, Modal, Button, notification } from 'antd';
 
 const RecordEdit = ({selectedRecord, handleCloseModal, handleSaveEdit}) => {
+
+  // Notify
+  const [api, contextHolder] = notification.useNotification();
 
   // Form View
   const [form] = Form.useForm();
@@ -23,6 +26,11 @@ const RecordEdit = ({selectedRecord, handleCloseModal, handleSaveEdit}) => {
       DatePicker: values.DatePicker,
     }
     handleSaveEdit(record); 
+    api.success({
+      message: `Record Edit`,
+      description: "Edit the record!",
+      placement: 'topRight',
+    });
   };
 
   return (
@@ -32,7 +40,8 @@ const RecordEdit = ({selectedRecord, handleCloseModal, handleSaveEdit}) => {
       footer={null}
       onCancel={handleCloseModal}
       className="form-card"
-      >
+    >
+      {contextHolder}
       <Form
         name="recordEdit"
         layout="vertical"

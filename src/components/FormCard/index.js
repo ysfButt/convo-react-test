@@ -1,8 +1,23 @@
 import React from 'react';
-import { Card, Form, Input, InputNumber, Button, DatePicker } from 'antd';
+import { Card, Form, Input, InputNumber, Button, DatePicker, notification } from 'antd';
 import moment from 'moment';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 
 const FormCard = ({ addRecord }) => {
+
+  // Notify
+  const [api, contextHolder] = notification.useNotification();
+
+  // Show Notify
+  const openNotification = () => {
+    api.success({
+      message: `Record Added`,
+      description: "Well done, you added a record!",
+      placement: 'topRight',
+    });
+  };
 
   // UseForm
   const [form] = Form.useForm();
@@ -17,14 +32,33 @@ const FormCard = ({ addRecord }) => {
     };
 
     addRecord(record);
-
+    openNotification();
     form.resetFields();
   };
 
+  // Custom Format
   const customFormat = value => value.format("DD-MM-YYYY");
+
+  // Disable Date
+  // const disabledDate = (current) => {
+  //   return moment().add(-1, 'days')  >= current || moment().add(1, 'month')  <= current;
+  // }
+  // const disabledDate = (current) => {
+  //   // Can not select days before today and today
+  //   return current && current < moment().endOf('day');
+  // };
+  // const disabledDate = (current) => {
+  //   // Can not select days before today and today
+  //   return current && current < dayjs().endOf('day');
+  // };
 
   return (
     <Card title="Add Record" className="form-card" bordered={false}>
+      {/* Notify */}
+      {contextHolder}
+      {/* Notify End */}
+
+      {/* Add Record Form */}
       <Form
         name="form_card"
         layout="vertical"
@@ -33,6 +67,7 @@ const FormCard = ({ addRecord }) => {
         }}
         onFinish={onFinish}
         form={form}
+        // disableddate={disabledDate}
         autoComplete="off"
         size="large"
       >
@@ -79,6 +114,7 @@ const FormCard = ({ addRecord }) => {
           <Button type="success" htmlType="submit" block>Add Data</Button>
         </Form.Item>
       </Form>
+      {/* Add Record Form End */}
     </Card>
   )
 }

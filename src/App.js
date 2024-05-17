@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { Layout, Row, Col, ConfigProvider, Modal } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Layout, Row, Col, ConfigProvider, Modal, notification } from 'antd';
 
 // Components
 import FormCard from './components/FormCard';
@@ -21,6 +21,7 @@ function App() {
 
   // States
   const [records, setRecords] = useState([]);
+  const [filteredRecords, setFilteredRecords] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null); 
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -28,16 +29,31 @@ function App() {
   // IndexedDB
   const { addObject, getAllObjects, updateObject, deleteObject } = useIndexedDB('RecordsDB', 'RecordsStore');
 
+  // Notify
+  const [api, contextHolder] = notification.useNotification();
 
   // Effects
   useEffect(() => {
-    getAllObjects(setRecords);
+    getAllObjects((result) => {
+      console.log('Fetched Facts:', result); // Debugging log
+      setRecords(result);
+      setFilteredRecords(result);
+    });
   }, []);
+  // useEffect(() => {
+  //   getAllObjects(setRecords);
+  // }, []);
+
+  // useEffect(() => {
+  //   getAllObjects(setFilteredRecords);
+  // }, [filteredRecords]);    
 
   // Add Record
   const addRecord = (record) => {
     addObject(record);
-    setRecords([...records, record]);
+    const newRecords = [...records, record];
+    setRecords(newRecords);
+    setFilteredRecords(newRecords);
   };
 
   // View Record
@@ -55,15 +71,24 @@ function App() {
   // Save Edit Record
   const handleSaveEdit = (editedRecord) => {
     updateObject(editedRecord);
-    setRecords(records.map(item => (item.id === editedRecord.id ? editedRecord : item)));
+    const updatedRecords = records.map(item => (item.id === editedRecord.id ? editedRecord : item));
+    setRecords(updatedRecords);
+    setFilteredRecords(updatedRecords);
     setIsEditModalOpen(false);
     setSelectedRecord(null);
   };
 
   // Delete Confirm
   const handleConfirmDelete = (id) => {
-    setRecords(records.filter(item => item.id !== id));
+    const updatedRecords = records.filter(item => item.id !== id);
+    setRecords(updatedRecords);
+    setFilteredRecords(updatedRecords);
     deleteObject(id);
+    api.success({
+      message: `Record Deleted`,
+      description: "Deleted the record!",
+      placement: 'topRight',
+    });
   };
 
   // Delete
@@ -77,6 +102,45 @@ function App() {
       onOk: () => handleConfirmDelete(record.id),
     });
   };
+
+  // Search
+  const handleSearch = useCallback((term) => {
+    if (term.length >= 3) {
+      const filtered = records.filter(fact =>
+        fact.title.toLowerCase().includes(term.toLowerCase())
+      );
+      console.log('Search Term:', term);
+      console.log('Filtered Facts:', filtered);
+      setFilteredRecords(filtered);
+    } else {
+      console.log('Search Term less than 3 characters:', term);
+      setFilteredRecords(records);
+    }
+  }, [records]);
+
+  // Sorted
+  const handleSort = useCallback((criteria) => {
+    console.log('criteria', criteria);
+    const sortedFacts = [...filteredRecords].sort((a, b) => {
+      console.log('Sorting by:', criteria);
+      console.log('a:', a);
+      console.log('b:', b);
+      if (criteria === 'upvotes') {
+        return console.log("a b", b.upvotes - a.upvotes);
+      } else if (criteria === 'DatePicker') {
+        return new Date(b.DatePicker) - new Date(a.DatePicker);
+      }
+      return 0;
+    });
+    console.log('sortedFacts', sortedFacts);
+    setFilteredRecords(sortedFacts);
+    console.log("records", records);
+    console.log("filteredRecords", filteredRecords);
+  }, [filteredRecords]);
+
+  // const handleClearSort = useCallback(() => {
+  //   setFilteredRecords(records);
+  // }, [records]);
 
   // Closed
   const handleCloseModal = () => {
@@ -99,6 +163,10 @@ function App() {
         },
       }}
     >
+      {/* Notify */}
+      {contextHolder}
+      {/* Notify End */}
+
       <div className="wrapper">
         
         {/* Main Layout */}
@@ -119,7 +187,7 @@ function App() {
                 <div className="record-content">
 
                   {/* Search Field */}
-                  <SearchField />
+                  <SearchField handleSearch={handleSearch} handleSort={handleSort} />
                   {/* Search Field End */}
 
                   {/* Record Table */}

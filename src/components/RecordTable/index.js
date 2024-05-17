@@ -24,12 +24,14 @@ const RecordTable = ({records, handleView, handleEdit, handleDelete}) => {
       title: 'Upvotes',
       dataIndex: 'upvotes',
       key: 'upvotes',
+      sorter: (a, b) => a.age - b.age,
     },
     {
       title: 'Date',
       dataIndex: 'DatePicker',
       key: 'DatePicker',
       render: (text) => text.format('DD-MM-YYYY'),
+      sorter: (a, b) => a.age - b.age,  
     },
     {
       title: 'Actions',
